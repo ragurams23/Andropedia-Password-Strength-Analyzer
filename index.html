@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Password Strength Analyzer</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <section class="card">
+      <div class="badge">ANDROPEDIA • TECHNICAL RECRUITMENT 2026</div>
+      <h1>Password Strength Analyzer</h1>
+      <p class="subtitle">Check password quality, understand weaknesses, and generate a stronger password.</p>
+
+      <div class="input-row">
+        <input id="password" type="password" autocomplete="off" placeholder="Enter a password">
+        <button id="toggleBtn" type="button">Show</button>
+      </div>
+
+      <div class="meter"><div id="meterFill"></div></div>
+      <div class="score-line">
+        <span id="strength">Enter a password</span>
+        <span id="score">0/100</span>
+      </div>
+
+      <div id="checks" class="checks"></div>
+      <div id="suggestions" class="suggestions"></div>
+
+      <hr>
+
+      <div class="generator">
+        <h2>Strong Password Generator</h2>
+        <div class="generator-controls">
+          <label>Length <input id="length" type="number" min="8" max="32" value="16"></label>
+          <label><input id="upper" type="checkbox" checked> Uppercase</label>
+          <label><input id="lower" type="checkbox" checked> Lowercase</label>
+          <label><input id="numbers" type="checkbox" checked> Numbers</label>
+          <label><input id="symbols" type="checkbox" checked> Symbols</label>
+        </div>
+        <button id="generateBtn" class="primary" type="button">Generate Password</button>
+        <div class="generated">
+          <input id="generatedPassword" readonly placeholder="Generated password">
+          <button id="copyBtn" type="button">Copy</button>
+        </div>
+      </div>
+
+      <p class="note">For demonstration only. Do not enter passwords you actually use.</p>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
