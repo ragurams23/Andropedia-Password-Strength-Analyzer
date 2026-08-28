@@ -1,4 +1,4 @@
-    document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", () => {
   // Matched HTML IDs
   const passwordInput = document.getElementById("password");
   const toggleBtn = document.getElementById("toggleBtn");
@@ -42,7 +42,7 @@
     passwordInput.addEventListener("input", () => analyze(passwordInput.value));
   }
 
-  // 3. Password Analyzer Logic
+  // 3. Updated Password Analyzer Logic (Unicode Length Fix)
   function analyze(password) {
     if (!password || password.trim() === "") {
       if (meterFill) {
@@ -67,19 +67,22 @@
       return;
     }
 
+    // Correctly count Unicode/Emoji symbols as 1 length each
+    const actualLength = Array.from(password).length;
+
     let score = 0;
     let suggestions = [];
 
-    const hasLength = password.length >= 12;
+    const hasLength = actualLength >= 12;
     const hasUpper = /[A-Z]/.test(password);
     const hasLower = /[a-z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
-    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password);
+    const hasSpecial = /[^A-Za-z0-9\s]/.test(password);
     
     const lowerPass = password.toLowerCase();
     const isCommon = commonPasswords.has(lowerPass);
     const hasSequence = sequences.some(seq => lowerPass.includes(seq));
-    const hasRepetition = /(.)\1{2,}/.test(password);
+    const hasRepetition = /(.)\1{2,}/u.test(password);
 
     if (hasLength) score += 25; else suggestions.push("Use at least 12 characters.");
     if (hasUpper) score += 15; else suggestions.push("Add uppercase letters.");
