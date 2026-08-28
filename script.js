@@ -1,11 +1,22 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const passwordInput = document.getElementById("passwordInput");
+    document.addEventListener("DOMContentLoaded", () => {
+  // Matched HTML IDs
+  const passwordInput = document.getElementById("password");
   const toggleBtn = document.getElementById("toggleBtn");
   const meterFill = document.getElementById("meterFill");
-  const strengthEl = document.getElementById("strengthEl");
-  const scoreEl = document.getElementById("scoreEl");
-  const checksEl = document.getElementById("checksEl");
-  const suggestionsEl = document.getElementById("suggestionsEl");
+  const strengthEl = document.getElementById("strength");
+  const scoreEl = document.getElementById("score");
+  const checksEl = document.getElementById("checks");
+  const suggestionsEl = document.getElementById("suggestions");
+
+  // Generator Controls
+  const lengthInput = document.getElementById("length");
+  const upperCheck = document.getElementById("upper");
+  const lowerCheck = document.getElementById("lower");
+  const numbersCheck = document.getElementById("numbers");
+  const symbolsCheck = document.getElementById("symbols");
+  const generateBtn = document.getElementById("generateBtn");
+  const generatedPasswordInput = document.getElementById("generatedPassword");
+  const copyBtn = document.getElementById("copyBtn");
 
   const commonPasswords = new Set([
     "password", "password123", "123456", "12345678", "qwerty", 
@@ -17,6 +28,7 @@ document.addEventListener("DOMContentLoaded", () => {
     "qwerty", "654321", "fedcba"
   ];
 
+  // 1. Toggle Show/Hide Password
   if (toggleBtn && passwordInput) {
     toggleBtn.addEventListener("click", () => {
       const isPassword = passwordInput.type === "password";
@@ -25,17 +37,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // 2. Real-time Analysis Listener
   if (passwordInput) {
     passwordInput.addEventListener("input", () => analyze(passwordInput.value));
   }
 
+  // 3. Password Analyzer Logic
   function analyze(password) {
     if (!password || password.trim() === "") {
       if (meterFill) {
         meterFill.style.width = "0%";
         meterFill.style.backgroundColor = "#e74c3c";
       }
-      if (strengthEl) strengthEl.textContent = "Password Strength: NONE";
+      if (strengthEl) strengthEl.textContent = "Enter a password";
       if (scoreEl) scoreEl.textContent = "0/100";
       if (checksEl) {
         checksEl.innerHTML = `
@@ -49,7 +63,7 @@ document.addEventListener("DOMContentLoaded", () => {
           <div><span style="color:#2ecc71">✓</span> Not a common password</div>
         `;
       }
-      if (suggestionsEl) suggestionsEl.innerHTML = "<li>Enter a password to begin analysis.</li>";
+      if (suggestionsEl) suggestionsEl.innerHTML = "";
       return;
     }
 
@@ -74,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (hasSpecial) score += 15; else suggestions.push("Add special characters.");
 
     if (!hasRepetition) score += 5; else suggestions.push("Avoid long repeated characters.");
-    if (!hasSequence) score += 5; else suggestions.push("Avoid sequential patterns (e.g., 1234, qwerty).");
+    if (!hasSequence) score += 5; else suggestions.push("Avoid sequential patterns.");
     if (!isCommon) score += 5; else suggestions.push("This is a commonly used password.");
 
     if (!hasLength && score > 60) score = 60;
@@ -113,8 +127,44 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (suggestionsEl) {
       suggestionsEl.innerHTML = suggestions.length > 0 
-        ? suggestions.map(item => `<li>${item}</li>`).join("")
-        : "<li>Great job! Your password meets all core safety guidelines.</li>";
+        ? suggestions.map(item => `<div>• ${item}</div>`).join("")
+        : "<div style='color:#2ecc71;'>✓ Great job! Your password meets all core safety guidelines.</div>";
     }
+  }
+
+  // 4. Generator Functionality
+  if (generateBtn) {
+    generateBtn.addEventListener("click", () => {
+      const length = parseInt(lengthInput.value) || 16;
+      let chars = "";
+      if (upperCheck.checked) chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      if (lowerCheck.checked) chars += "abcdefghijklmnopqrstuvwxyz";
+      if (numbersCheck.checked) chars += "0123456789";
+      if (symbolsCheck.checked) chars += "!@#$%^&*()_+-=[]{}|;:,.<>?";
+
+      if (!chars) {
+        alert("Select at least one character type!");
+        return;
+      }
+
+      let result = "";
+      for (let i = 0; i < length; i++) {
+        result += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+
+      generatedPasswordInput.value = result;
+    });
+  }
+
+  // 5. Copy Button Functionality
+  if (copyBtn && generatedPasswordInput) {
+    copyBtn.addEventListener("click", () => {
+      if (!generatedPasswordInput.value) return;
+      navigator.clipboard.writeText(generatedPasswordInput.value).then(() => {
+        const origText = copyBtn.textContent;
+        copyBtn.textContent = "Copied!";
+        setTimeout(() => (copyBtn.textContent = origText), 1500);
+      });
+    });
   }
 });
