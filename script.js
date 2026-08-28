@@ -77,7 +77,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const hasUpper = /[A-Z]/.test(password);
     const hasLower = /[a-z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
-    const hasSpecial = /[^A-Za-z0-9\s]/.test(password);
+    const hasSpecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]/.test(password);
+
     
     const lowerPass = password.toLowerCase();
     const isCommon = commonPasswords.has(lowerPass);
